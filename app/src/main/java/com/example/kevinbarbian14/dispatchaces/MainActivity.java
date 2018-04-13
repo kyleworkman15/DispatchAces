@@ -1,21 +1,12 @@
 package com.example.kevinbarbian14.dispatchaces;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Color;
-import android.provider.ContactsContract;
-import android.renderscript.Sampler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TableRow;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,8 +19,8 @@ import java.util.HashMap;
 
 public class MainActivity extends Activity {
     private ListView list;
-    private DatabaseReference mDatabase;
-    private DatabaseReference mDatabase2;
+    private DatabaseReference currentRides;
+    private DatabaseReference archivedRides;
     private Button add_btn;
     private EditText email_text;
     private EditText from_text;
@@ -45,32 +36,24 @@ public class MainActivity extends Activity {
         from_text = findViewById(R.id.start_text);
         to_text = findViewById(R.id.end_text);
         num_riders = findViewById(R.id.num_riders);
-        mDatabase = FirebaseDatabase.getInstance().getReference("USERS");
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        currentRides = FirebaseDatabase.getInstance().getReference().child("USERS");
+       // archivedRides = FirebaseDatabase.getInstance().getReference();
+        currentRides.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<String> temp = new ArrayList<String>();
-                for (DataSnapshot shot: dataSnapshot.getChildren()){
-                    RideInfo rider = shot.getValue(RideInfo.class);
-                    String info = "Email: " + rider.getEmail() + "\n" +
-                            "Start: " + rider.getStart() + "\n" +
-                            "End: " + rider.getEnd() + "\n" +
-                            "# riders: " + rider.getNumRiders() + "\n" +
-                            "Time: " + rider.getTime();
-                    temp.add(info);
-                }
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,temp);
-                arrayAdapter.notifyDataSetChanged();
-                list.setAdapter(arrayAdapter);
+                    ArrayList<RideInfo> temp = new ArrayList<RideInfo>();
+                    for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                        RideInfo rider = shot.getValue(RideInfo.class);
+                        temp.add(rider);
+                    }
+                    RideAdapter arrayAdapter = new RideAdapter(getBaseContext(), temp);
+                    //arrayAdapter.notifyDataSetChanged();
+                    list.setAdapter(arrayAdapter);
                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        String info = (String)list.getItemAtPosition(position);
-                        String email = ((String) list.getItemAtPosition(position)).substring(info.indexOf(" ")+1,info.indexOf("\n"));
-                        DatabaseReference tempRef = FirebaseDatabase.getInstance().getReference().child("USERS").child(email);
-//                        DatabaseReference archiveRef = FirebaseDatabase.getInstance().getReference().child("RIDES")
-                        tempRef.setValue(null);
-                        Log.d("MSG",email);
+                        RideInfo selectedRide = (RideInfo) list.getItemAtPosition(position);
+                        deleteUser(selectedRide);
                     }
                 });
             }
@@ -92,7 +75,7 @@ public class MainActivity extends Activity {
                 addInfo.put("From",from);
                 addInfo.put("To",to);
                 addInfo.put("Number of riders",riders);
-                mDatabase.child(email).setValue(addInfo);
+                currentRides.child(email).setValue(addInfo);
 
             }
         });
@@ -102,7 +85,7 @@ public class MainActivity extends Activity {
 //            addInfo.put("From","FROM" +i);
 //            addInfo.put("To","TO" + i);
 //            addInfo.put("Number of riders","RIDERS" + i);
-//            mDatabase.child("Email" + i).setValue(addInfo);
+//            currentRides.child("Email" + i).setValue(addInfo);
 //    }
 
     }
@@ -118,5 +101,14 @@ public class MainActivity extends Activity {
         }
 
     };
+    private void deleteUser(RideInfo rider){
+        currentRides.child(rider.getEmail()).setValue(null);
+        DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
+        archivedRides.child(rider.getEmail()).setValue(rider);
+    }
+    private void clearArchives(){
+        DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
+        archivedRides.setValue(null);
+    }
 
 }
