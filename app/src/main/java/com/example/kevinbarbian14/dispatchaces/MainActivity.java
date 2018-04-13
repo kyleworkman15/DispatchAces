@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         String info = (String)list.getItemAtPosition(position);
-                        String email = ((String) list.getItemAtPosition(position)).substring(0,info.indexOf("\n"));
+                        String email = ((String) list.getItemAtPosition(position)).substring(info.indexOf(" ")+1,info.indexOf("\n"));
                         DatabaseReference tempRef = FirebaseDatabase.getInstance().getReference().child("USERS").child(email);
 //                        DatabaseReference archiveRef = FirebaseDatabase.getInstance().getReference().child("RIDES")
                         tempRef.setValue(null);
