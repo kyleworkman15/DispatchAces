@@ -2,11 +2,14 @@ package com.example.kevinbarbian14.dispatchaces;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +29,7 @@ public class MainActivity extends Activity {
     private EditText from_text;
     private EditText to_text;
     private EditText num_riders;
+    private EditText waitTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +40,8 @@ public class MainActivity extends Activity {
         from_text = findViewById(R.id.start_text);
         to_text = findViewById(R.id.end_text);
         num_riders = findViewById(R.id.num_riders);
-        currentRides = FirebaseDatabase.getInstance().getReference().child("USERS");
+        //list.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        currentRides = FirebaseDatabase.getInstance().getReference().child("CURRENT RIDES");
        // archivedRides = FirebaseDatabase.getInstance().getReference();
         currentRides.addValueEventListener(new ValueEventListener() {
             @Override
@@ -49,13 +54,6 @@ public class MainActivity extends Activity {
                     RideAdapter arrayAdapter = new RideAdapter(getBaseContext(), temp);
                     //arrayAdapter.notifyDataSetChanged();
                     list.setAdapter(arrayAdapter);
-                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        RideInfo selectedRide = (RideInfo) list.getItemAtPosition(position);
-                        deleteUser(selectedRide);
-                    }
-                });
             }
 
             @Override
@@ -106,9 +104,11 @@ public class MainActivity extends Activity {
         DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
         archivedRides.child(rider.getEmail()).setValue(rider);
     }
-    private void clearArchives(){
+    private void clearArchives() {
         DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
         archivedRides.setValue(null);
     }
+
+
 
 }
