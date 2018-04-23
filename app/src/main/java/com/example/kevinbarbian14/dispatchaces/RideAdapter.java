@@ -13,10 +13,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,31 +31,37 @@ public class RideAdapter extends ArrayAdapter<RideInfo> {
     private Context mContext;
     private List<RideInfo> rideList = new ArrayList<>();
     private DatabaseReference database;
+    private boolean pendingFlag;
     LayoutInflater inflater;
 
-    public RideAdapter(@NonNull Context context, ArrayList<RideInfo> list) {
+    public RideAdapter(@NonNull Context context, ArrayList<RideInfo> list, boolean flag) {
         super(context, 0, list);
         inflater = LayoutInflater.from(context);
+        database = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
+        this.pendingFlag = flag;
         mContext = context;
         rideList = list;
     }
 
-    private class ViewHolder
+    public class ViewHolder
     {
         TextView email;
+        Button button;
         TextView from;
         TextView to;
         TextView riders;
         TextView time;
         EditText waitTime;
     }
+
     @Override
 
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.list_item, null);
+            holder.button = (Button) convertView.findViewById(R.id.button2);
             holder.email = (TextView) convertView.findViewById(R.id.email_l);
             holder.from = (TextView) convertView.findViewById(R.id.start_l);
             holder.to = (TextView) convertView.findViewById(R.id.end_l);
@@ -64,21 +72,20 @@ public class RideAdapter extends ArrayAdapter<RideInfo> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        RideInfo currentRide = rideList.get(position);
-        RideClickListener deleteRide = new RideClickListener(currentRide);
+        final RideInfo currentRide = rideList.get(position);
         WaitTimeWatcher waitTimeWatcher = new WaitTimeWatcher(currentRide);
-        holder.email.setOnClickListener(deleteRide);
-        holder.email.setText(currentRide.getEmail());
-        holder.from.setOnClickListener(deleteRide);
-        holder.from.setText(currentRide.getStart());
-        holder.to.setOnClickListener(deleteRide);
-        holder.to.setText(currentRide.getEnd());
-        holder.riders.setOnClickListener(deleteRide);
-        holder.riders.setText(String.valueOf(currentRide.getNumRiders()));
-        holder.time.setOnClickListener(deleteRide);
-        holder.time.setText(currentRide.getTime());
         holder.waitTime.setText(String.valueOf(currentRide.getWaitTime()));
-        holder.waitTime.addTextChangedListener(waitTimeWatcher);
+        RideClickListener deleteRide = new RideClickListener(currentRide,pendingFlag,holder.waitTime);
+        holder.button.setOnClickListener(deleteRide);
+        if (deleteRide.pending==true)
+            holder.button.setText("SEND");
+        else
+            holder.button.setText("CLEAR");
+        holder.email.setText(currentRide.getEmail());
+        holder.from.setText(currentRide.getStart());
+        holder.to.setText(currentRide.getEnd());
+        holder.riders.setText(String.valueOf(currentRide.getNumRiders()));
+        holder.time.setText(currentRide.getTime());
         return convertView;
 
     }

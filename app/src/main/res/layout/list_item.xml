@@ -50,12 +50,19 @@
 
     <EditText
         android:id="@+id/editText"
-        android:clickable="true"
-        android:focusedByDefault="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/time_l"
         android:ems="10"
-        android:inputType="textPersonName" />
+        android:inputType="textNoSuggestions" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/time_l"
+        android:layout_marginEnd="35dp"
+        android:text="Button" />
 </android.support.percent.PercentRelativeLayout>

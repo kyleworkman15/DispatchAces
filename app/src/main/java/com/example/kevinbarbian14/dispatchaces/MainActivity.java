@@ -23,26 +23,48 @@ import java.util.HashMap;
 public class MainActivity extends Activity {
     private ListView list;
     private DatabaseReference currentRides;
-    private DatabaseReference archivedRides;
+    private DatabaseReference activeRides;
     private Button add_btn;
     private EditText email_text;
     private EditText from_text;
     private EditText to_text;
     private EditText num_riders;
     private EditText waitTime;
+    private ListView activeList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         list = findViewById(R.id.list);
-        add_btn = findViewById(R.id.add_btn);
-        email_text = findViewById(R.id.email_text);
-        from_text = findViewById(R.id.start_text);
-        to_text = findViewById(R.id.end_text);
-        num_riders = findViewById(R.id.num_riders);
+        activeList = findViewById(R.id.active);
+//        add_btn = findViewById(R.id.add_btn);
+//        email_text = findViewById(R.id.email_text);
+//        from_text = findViewById(R.id.start_text);
+//        to_text = findViewById(R.id.end_text);
+//        num_riders = findViewById(R.id.num_riders);
         //list.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         currentRides = FirebaseDatabase.getInstance().getReference().child("CURRENT RIDES");
+        activeRides = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
+
        // archivedRides = FirebaseDatabase.getInstance().getReference();
+        activeRides.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<RideInfo> temp = new ArrayList<RideInfo>();
+                for (DataSnapshot shot : dataSnapshot.getChildren()) {
+                    RideInfo rider = shot.getValue(RideInfo.class);
+                    temp.add(rider);
+                }
+                RideAdapter arrayAdapter = new RideAdapter(getBaseContext(), temp, false);
+                //arrayAdapter.notifyDataSetChanged();
+                activeList.setAdapter(arrayAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         currentRides.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -51,7 +73,8 @@ public class MainActivity extends Activity {
                         RideInfo rider = shot.getValue(RideInfo.class);
                         temp.add(rider);
                     }
-                    RideAdapter arrayAdapter = new RideAdapter(getBaseContext(), temp);
+                    RideAdapter arrayAdapter = new RideAdapter(getBaseContext(), temp,true);
+
                     //arrayAdapter.notifyDataSetChanged();
                     list.setAdapter(arrayAdapter);
             }
@@ -61,22 +84,24 @@ public class MainActivity extends Activity {
 
             }
         });
-        add_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = email_text.getText().toString().replace(".",",");
-                String from = from_text.getText().toString();
-                String to = to_text.getText().toString();
-                String riders = num_riders.getText().toString();
-                HashMap<String,String> addInfo = new HashMap<String,String>();
-                addInfo.put("Email",email);
-                addInfo.put("From",from);
-                addInfo.put("To",to);
-                addInfo.put("Number of riders",riders);
-                currentRides.child(email).setValue(addInfo);
 
-            }
-        });
+
+//        add_btn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String email = email_text.getText().toString().replace(".",",");
+//                String from = from_text.getText().toString();
+//                String to = to_text.getText().toString();
+//                String riders = num_riders.getText().toString();
+//                HashMap<String,String> addInfo = new HashMap<String,String>();
+//                addInfo.put("Email",email);
+//                addInfo.put("From",from);
+//                addInfo.put("To",to);
+//                addInfo.put("Number of riders",riders);
+//                currentRides.child(email).setValue(addInfo);
+//
+//            }
+//        });
 //        for (int i = 0; i < 10; i++){
 //            HashMap<String,String> addInfo = new HashMap<String,String>();
 //            addInfo.put("Email","Email" + i);
@@ -87,18 +112,7 @@ public class MainActivity extends Activity {
 //    }
 
     }
-    public class CustomClickListener implements AdapterView.OnItemClickListener
-    {
-        public CustomClickListener() {
-        }
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-        {
 
-            //read your lovely variable
-        }
-
-    };
     private void deleteUser(RideInfo rider){
         currentRides.child(rider.getEmail()).setValue(null);
         DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
