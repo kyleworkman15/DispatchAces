@@ -1,15 +1,20 @@
 package com.example.kevinbarbian14.dispatchaces;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +29,7 @@ public class MainActivity extends Activity {
     private ListView list;
     private DatabaseReference currentRides;
     private DatabaseReference activeRides;
+    private DatabaseReference flagStatus;
     private Button add_btn;
     private EditText email_text;
     private EditText from_text;
@@ -31,12 +37,16 @@ public class MainActivity extends Activity {
     private EditText num_riders;
     private EditText waitTime;
     private ListView activeList;
+    private ToggleButton status;
+    private boolean statusFlag;
+    private SharedPreferences preferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         list = findViewById(R.id.list);
         activeList = findViewById(R.id.active);
+        status = (ToggleButton) findViewById(R.id.status);
 //        add_btn = findViewById(R.id.add_btn);
 //        email_text = findViewById(R.id.email_text);
 //        from_text = findViewById(R.id.start_text);
@@ -45,6 +55,54 @@ public class MainActivity extends Activity {
         //list.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         currentRides = FirebaseDatabase.getInstance().getReference().child("CURRENT RIDES");
         activeRides = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
+        flagStatus = FirebaseDatabase.getInstance().getReference().child("STATUS");
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        boolean statusFlag = preferences.getBoolean("ref",true);  //default is true
+        Log.d("MSG",String.valueOf(statusFlag));
+        if (statusFlag == true) //if (tgpref) may be enough, not sure
+        {
+            status.setChecked(true);
+            status.setBackgroundColor(Color.GREEN);
+
+        }
+        else
+        {
+            Log.d("MSG","SUCCESS");
+            status.setChecked(false);
+            status.setBackgroundColor(Color.RED);
+
+        }
+        status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+                if (status.isChecked()){
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean("ref", true); // value to store
+                    editor.commit();
+                    status.setBackgroundColor(Color.GREEN);
+                }
+                else
+                {
+                    Log.d("MSG",String.valueOf(status.isChecked()));
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putBoolean("ref", false); // value to store
+                    editor.commit();
+                    status.setBackgroundColor(Color.RED);
+                }
+                }
+        });
+        status.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    flagStatus.child("FLAG").setValue("ON");
+                    // The toggle is enabled
+                } else {
+                    flagStatus.child("FLAG").setValue("OFF");
+                    // The toggle is disabled
+                }
+            }
+        });
 
        // archivedRides = FirebaseDatabase.getInstance().getReference();
         activeRides.addValueEventListener(new ValueEventListener() {
