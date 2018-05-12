@@ -1,3 +1,10 @@
 <resources>
+
     <string name="app_name">DispatchAces</string>
+    <string name="aces_long_name">Augustana College Express Service</string>
+    <string name="purpose_title">Purpose:</string>
+    <string name="purpose_text">The purpose of this app is to provide the ACES
+    dispatcher with a way to handle ride requests and update the driver with an ETA
+    for arrival</string>
+
 </resources>

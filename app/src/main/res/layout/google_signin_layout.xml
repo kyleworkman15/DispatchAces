@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_btn"
+        android:layout_centerVertical="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:layout_marginBottomPercent="5%"
+        app:layout_widthPercent="70%">
+
+    </com.google.android.gms.common.SignInButton>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_widthPercent="90%"
+        app:layout_heightPercent="90%"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@mipmap/dispatcher_launcher_foreground"
+        />
+
+    <TextView
+        android:id="@+id/textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:autoSizeTextType="uniform"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        app:layout_marginTopPercent="8%"
+        android:text="@string/aces_long_name"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/about_btn"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/google_btn"
+        android:text=" ? "
+        />
+</android.support.percent.PercentRelativeLayout>
