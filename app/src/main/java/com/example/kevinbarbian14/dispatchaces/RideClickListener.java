@@ -7,6 +7,9 @@ import android.widget.EditText;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
 /**
  * Created by kevinbarbian on 4/17/18.
  */
@@ -39,6 +42,10 @@ public class RideClickListener implements View.OnClickListener {
         else {
             activeRides.child(clickedRide.getEmail()).setValue(null);
             DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
+            //Get the time for when the ride was completed.
+            Timestamp ts = new Timestamp(System.currentTimeMillis());
+            String time = new SimpleDateFormat("MMM d hh:mm aaa").format(ts);
+            clickedRide.setEndTime(time);
             archivedRides.child(clickedRide.getEmail() + "_" + clickedRide.getTime()).setValue(clickedRide);
         }
 

@@ -67,6 +67,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "474648295298-h0jfm7epaau0s9ga0m1eunalpquk45im.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kevinbarbian14.dispatchaces",
+            "certificate_hash": "ab8de34a86cf00019afd2b80d33228c2459c5b52"
+          }
+        },
+        {
           "client_id": "474648295298-9t42j1fgqu8ikql68ghm19npgaims1rs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
