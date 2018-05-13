@@ -1,22 +1,26 @@
 package com.example.kevinbarbian14.dispatchaces;
 
 /**
- * Created by kevinbarbian on 4/12/18.
+ * Custom Ride Object class used for holding all information about a user's ride.
+ * Date: 5/13/2018
+ *
+ * @author Tyler May, Kevin Barbian, Megan Janssen, Tan Nguyen
  */
 
 public class RideInfo {
-    public String email;
-    public String start;
-    public String end;
-    public int numRiders;
-    public String endTime;
-    public String time;
-    public int waitTime;
+    public String email; //the users email
+    public String start; //start location
+    public String end; //destination
+    public int numRiders; //number of riders
+    public String endTime; //timestamp of when the ride was fulfilled
+    public String time; //start time
+    public int waitTime; //wait time
 
     public String getEmail() {
         return email;
     }
-    public void setEndTime(String time){
+
+    public void setEndTime(String time) {
         endTime = time;
     }
 
@@ -60,11 +64,11 @@ public class RideInfo {
         this.waitTime = waitTime;
     }
 
-    public int getWaitTime(){
+    public int getWaitTime() {
         return waitTime;
     }
 
-    public RideInfo(String email, String start, String end, int numRiders, String time,int waitTime, String endTime) {
+    public RideInfo(String email, String start, String end, int numRiders, String time, int waitTime, String endTime) {
         this.email = email;
         this.start = start;
         this.end = end;
@@ -74,7 +78,7 @@ public class RideInfo {
         this.waitTime = waitTime;
     }
 
-    public RideInfo(){
+    public RideInfo() {
 
     }
 

@@ -19,14 +19,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
+/**
+ * Main screen used to maintain ride data for the dispatcher/driver.
+ * From here the dispatcher is able to accept and assign wait times to rides; they can
+ * also update the wait time on the rides after they have been accepted. This allows the dispatcher
+ * to update the wait time in the scenario that they entered the time incorrectly or there were cancelled requests
+ * that might shorten the time.
+ * Date: 5/13/2018
+ * @author  Tyler May, Kevin Barbian, Megan Janssen, Tan Nguyen
+ */
 public class MainActivity extends Activity {
-    private ListView list;
-    private DatabaseReference currentRides;
-    private DatabaseReference activeRides;
-    private DatabaseReference flagStatus;
-    private ListView activeList;
-    private ToggleButton status;
+    private ListView list; //The list being displayed on the screen and storing RideInfo data for pending rides
+    private DatabaseReference pendingRides; //A reference to the pending rides in the database
+    private DatabaseReference activeRides; //A reference to the active rides in the database
+    private DatabaseReference flagStatus; //A reference to the ON/OFF flag in the database
+    private ListView activeList; //List being displayed on the screen for active rides
+    private ToggleButton status; //Current status of the ON/OFF button at the top of the screen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +43,15 @@ public class MainActivity extends Activity {
         list = findViewById(R.id.list);
         activeList = findViewById(R.id.active);
         status = (ToggleButton) findViewById(R.id.status);
-        currentRides = FirebaseDatabase.getInstance().getReference().child("CURRENT RIDES");
+        pendingRides = FirebaseDatabase.getInstance().getReference().child("CURRENT RIDES");
         activeRides = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
         flagStatus = FirebaseDatabase.getInstance().getReference().child("STATUS");
+        //we store the value of checked button in shared preferences so that
+        //the app will remember if ACES was turned off or on last time it was used
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         boolean statusFlag = preferences.getBoolean("ref",true);  //default is true
         Log.d("MSG",String.valueOf(statusFlag));
+        //communicate the status of the flag with the user
         if (statusFlag == true)
         {
             status.setChecked(true);
@@ -49,7 +60,6 @@ public class MainActivity extends Activity {
         }
         else
         {
-            Log.d("MSG","SUCCESS");
             status.setChecked(false);
             status.setBackgroundColor(Color.RED);
 
@@ -58,6 +68,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+                //if ACES is on then store the reference as true, set background to green
                 if (status.isChecked()){
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("ref", true); // value to store
@@ -66,7 +77,6 @@ public class MainActivity extends Activity {
                 }
                 else
                 {
-                    Log.d("MSG",String.valueOf(status.isChecked()));
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putBoolean("ref", false); // value to store
                     editor.commit();
@@ -75,6 +85,10 @@ public class MainActivity extends Activity {
                 }
         });
         status.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            /*
+            * Checks to see if the dispatcher turned aces on or off. Send the request to firebase
+            * and change the status of the flag.
+            */
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     flagStatus.child("FLAG").setValue("ON");
@@ -89,6 +103,11 @@ public class MainActivity extends Activity {
        // archivedRides = FirebaseDatabase.getInstance().getReference();
         activeRides.addValueEventListener(new ValueEventListener() {
             @Override
+            /*
+            * Generate the list of active rides to be displayed for the dispatcher/driver.
+            * This updates in realtime and reads in data from the firebase database reference.
+            * Template for this display is based on our list_item.xml file.
+            */
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<RideInfo> temp = new ArrayList<RideInfo>();
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
@@ -106,7 +125,12 @@ public class MainActivity extends Activity {
 
             }
         });
-        currentRides.addValueEventListener(new ValueEventListener() {
+        pendingRides.addValueEventListener(new ValueEventListener() {
+            /*
+            * Generate the list of pending rides to be displayed for the dispatcher/driver.
+            * This updates in realtime and reads in data from the firebase database reference.
+            * Template for this display is based on our list_item.xml file.
+            */
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                     ArrayList<RideInfo> temp = new ArrayList<RideInfo>();
@@ -114,11 +138,8 @@ public class MainActivity extends Activity {
                         RideInfo rider = shot.getValue(RideInfo.class);
                         rider.setEmail(rider.getEmail().replace(",","."));
                         temp.add(rider);
-                       // rider.setEmail(rider.getEmail().replace(".",","));
                     }
                     RideAdapter arrayAdapter = new RideAdapter(getBaseContext(), temp,true);
-
-                    //arrayAdapter.notifyDataSetChanged();
                     list.setAdapter(arrayAdapter);
             }
 
@@ -129,21 +150,9 @@ public class MainActivity extends Activity {
         });
 
     }
-
-    private void deleteUser(RideInfo rider){
-        rider.setEmail(rider.getEmail().replace(".",","));
-        currentRides.child(rider.getEmail()).setValue(null);
-        DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
-        archivedRides.child(rider.getEmail()).setValue(rider);
-    }
-    private void clearArchives() {
-        DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
-        archivedRides.setValue(null);
-    }
-
     @Override
     /**
-     * Signs out the user if the back is pressed
+     * Signs out the user if the back is pressed and starts the google sign in activity.
      */
     public void onBackPressed() {
         FirebaseAuth.getInstance().signOut();

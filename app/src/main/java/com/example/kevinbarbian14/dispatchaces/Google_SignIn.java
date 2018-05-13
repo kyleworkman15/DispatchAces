@@ -30,8 +30,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 /**
  * Google Sign-in screen for dispatcher user to sign into the app with.
  * Requires augieaardvark@gmail.com to sign in
- *
- * Created by meganjanssen14 on 5/10/18.
+ * Date: 5/13/2018
+ * @author  Tyler May, Kevin Barbian, Megan Janssen, Tan Nguyen
  */
 
 public class Google_SignIn extends AppCompatActivity {
@@ -72,7 +72,7 @@ public class Google_SignIn extends AppCompatActivity {
             }
         };
 
-
+        //reference for this set up: https://developers.google.com/identity/sign-in/android/sign-in
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -116,7 +116,15 @@ public class Google_SignIn extends AppCompatActivity {
             startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-
+    /*
+     * After the user selects their email and chooses to log in, this code is executed to sign
+     * them into their google account.
+     * @param  requestCode used to identify the previous activity that was executed
+     * @param  resultCode used to indicate whether or not the activity succeeded
+     * @param data used to identify which intent was selected
+     *
+     * reference: https://developer.android.com/training/basics/intents/result
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -134,6 +142,7 @@ public class Google_SignIn extends AppCompatActivity {
             }
         }
     }
+    //reference for method: https://firebase.google.com/docs/auth/android/google-signin
     private void firebaseAuthWithGoogle(GoogleSignInAccount account){
 
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
@@ -151,7 +160,11 @@ public class Google_SignIn extends AppCompatActivity {
                     }
                 });
     }
+    /*
+     * User can exit out of the app by clicking the back button
+     */
     public void onBackPressed() {
+
         moveTaskToBack(true);
     }
 
