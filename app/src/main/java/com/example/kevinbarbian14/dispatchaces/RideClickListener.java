@@ -12,16 +12,19 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by kevinbarbian on 4/17/18.
+ * Custom ride click listener that determines whether the ride should be sent to active, archived, or just updated.
+ * This class is used to handle the different scenarios that can occur while the dispatcher/driver are handling rides.
+ * Date: 5/13/2018
+ * @author  Tyler May, Kevin Barbian, Megan Janssen, Tan Nguyen
  */
 
 public class RideClickListener implements View.OnClickListener {
-    private DatabaseReference currentRides;
-    private DatabaseReference activeRides;
-    private EditText waitTime;
-    private boolean updated;
-    RideInfo clickedRide;
-    Boolean pending;
+    private DatabaseReference pendingRides; //reference to the pending rides
+    private DatabaseReference activeRides; //reference to the active rides
+    private EditText waitTime; //editText that is being modified
+    private boolean updated; //flag for whether or not we want to update the wait time
+    RideInfo clickedRide; //the ride object being selected
+    Boolean pending; //whether or not the ride is pending or active
 
     public RideClickListener(RideInfo ride,boolean pending,EditText waitTime,boolean updated) {
         this.updated = updated;
@@ -29,22 +32,30 @@ public class RideClickListener implements View.OnClickListener {
         this.waitTime = waitTime;
         this.pending = pending;
         activeRides = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
-        currentRides = FirebaseDatabase.getInstance().getReference().child("CURRENT RIDES");
+        pendingRides = FirebaseDatabase.getInstance().getReference().child("CURRENT RIDES");
     }
 
     @Override
     public void onClick(View arg0) {
+        //replace the "." with "," as we use email as a key value in firebase and those cannot contain "."'s
         clickedRide.setEmail(clickedRide.getEmail().replace(".",","));
+        //Check to see if the dispatcher/driver entered a valid integer
         if (TextUtils.isDigitsOnly(waitTime.getText()) && !waitTime.getText().toString().equals("")) {
+            //updating an active ride
             if (updated == true && pending == false) {
                 DatabaseReference activeRidess = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
                 activeRidess.child(clickedRide.getEmail()).child("waitTime").setValue(Integer.parseInt(waitTime.getText().toString()));
-            } else if (pending == true) {
-                currentRides.child(clickedRide.getEmail()).setValue(null);
-                DatabaseReference activeRidess = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
-                activeRidess.child(clickedRide.getEmail()).setValue(clickedRide);
-                activeRidess.child(clickedRide.getEmail()).child("waitTime").setValue(Integer.parseInt(waitTime.getText().toString()));
-            } else {
+
+            }
+            //sending a pending ride to active
+            else if (pending == true) {
+                pendingRides.child(clickedRide.getEmail()).setValue(null);
+                DatabaseReference activeRidesRef = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
+                activeRidesRef.child(clickedRide.getEmail()).setValue(clickedRide);
+                activeRidesRef.child(clickedRide.getEmail()).child("waitTime").setValue(Integer.parseInt(waitTime.getText().toString()));
+            }
+            //sending an active ride to archived
+            else {
                 activeRides.child(clickedRide.getEmail().replace(".", ",")).setValue(null);
                 DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
                 //Get the time for when the ride was completed.
