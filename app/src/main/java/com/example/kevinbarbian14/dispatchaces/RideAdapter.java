@@ -47,6 +47,7 @@ public class RideAdapter extends ArrayAdapter<RideInfo> {
     {
         TextView email;
         Button button;
+        Button update;
         TextView from;
         TextView to;
         TextView riders;
@@ -62,6 +63,7 @@ public class RideAdapter extends ArrayAdapter<RideInfo> {
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.list_item, null);
             holder.button = (Button) convertView.findViewById(R.id.button2);
+            holder.update = (Button) convertView.findViewById(R.id.update);
             holder.email = (TextView) convertView.findViewById(R.id.email_l);
             holder.from = (TextView) convertView.findViewById(R.id.start_l);
             holder.to = (TextView) convertView.findViewById(R.id.end_l);
@@ -75,12 +77,17 @@ public class RideAdapter extends ArrayAdapter<RideInfo> {
         final RideInfo currentRide = rideList.get(position);
         WaitTimeWatcher waitTimeWatcher = new WaitTimeWatcher(currentRide);
         holder.waitTime.setText(String.valueOf(currentRide.getWaitTime()));
-        RideClickListener deleteRide = new RideClickListener(currentRide,pendingFlag,holder.waitTime);
+        RideClickListener deleteRide = new RideClickListener(currentRide,pendingFlag,holder.waitTime,false);
+        RideClickListener updateRide = new RideClickListener(currentRide,pendingFlag,holder.waitTime,true);
         holder.button.setOnClickListener(deleteRide);
-        if (deleteRide.pending==true)
+        holder.update.setOnClickListener(updateRide);
+        if (deleteRide.pending==true) {
             holder.button.setText("SEND");
-        else
+            holder.update.setVisibility(View.GONE);
+        }
+        else {
             holder.button.setText("CLEAR");
+        }
         holder.email.setText(currentRide.getEmail());
         holder.from.setText(currentRide.getStart());
         holder.to.setText(currentRide.getEnd());
