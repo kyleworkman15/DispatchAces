@@ -72,7 +72,7 @@ public class Google_SignIn extends AppCompatActivity {
             }
         };
 
-
+        //reference for this set up: https://developers.google.com/identity/sign-in/android/sign-in
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -122,6 +122,8 @@ public class Google_SignIn extends AppCompatActivity {
      * @param  requestCode used to identify the previous activity that was executed
      * @param  resultCode used to indicate whether or not the activity succeeded
      * @param data used to identify which intent was selected
+     *
+     * reference: https://developer.android.com/training/basics/intents/result
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -140,6 +142,7 @@ public class Google_SignIn extends AppCompatActivity {
             }
         }
     }
+    //reference for method: https://firebase.google.com/docs/auth/android/google-signin
     private void firebaseAuthWithGoogle(GoogleSignInAccount account){
 
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
