@@ -28,4 +28,26 @@ Testing
 
 We tested our application on a few different devices. We used emulators, Tablets running API 20, Tablet running API 23, and a phone running the most recent version. 
 
-1.) 
+1.) The dispatcher accepts a ride -- enters a wait time and sends the info to the user, restricts dispatcher from entering negative or invalid characters, sends ride from pending to active in Firebase
+2.) Dispatcher updates wait time -- dispatcher can update an already active ride with a new wait time if something occurs
+3.) Dispatcher wants to complete a ride --  dispatcher can click complete ride button to send, sends ride from active ride to archived ride
+4.) Dispatcher closes app, and reopens -- the app reopens and is still signed in
+
+Google Firebase, Authentication and Realtime Database - Used for Google Signin and storing ride data / communcating with user app.
+
+Authors with guidance from Dr. Forrest Stonedahl
+
+Tan Nguyen
+
+Megan Janssen
+
+Tyler May
+
+Kevin Barbian 
+
+Contributions:
+
+Tyler May
+Pair programmed with Kevin Barbian
+Setting up dispatch display, listview with textviews for email, start and end location, timestamp and edit text and buttons for setting and updating wait time
+Allowing dispatcher to set ACES to go online/offline
