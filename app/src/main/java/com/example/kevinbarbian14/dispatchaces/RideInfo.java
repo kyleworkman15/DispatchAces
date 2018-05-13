@@ -35,6 +35,31 @@ public class RideInfo {
     public String getTime() {
         return time;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
+    }
+
+    public void setNumRiders(int numRiders) {
+        this.numRiders = numRiders;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setWaitTime(int waitTime) {
+        this.waitTime = waitTime;
+    }
+
     public int getWaitTime(){
         return waitTime;
     }

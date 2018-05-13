@@ -31,16 +31,16 @@ public class RideClickListener implements View.OnClickListener {
 
     @Override
     public void onClick(View arg0) {
-        Log.d("TEST", "TEST");
+        clickedRide.setEmail(clickedRide.getEmail().replace(".",","));
         if (pending == true){
             currentRides.child(clickedRide.getEmail()).setValue(null);
             DatabaseReference activeRidess = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
-            activeRidess.child(clickedRide.email).setValue(clickedRide);
-            activeRidess.child(clickedRide.email).child("waitTime").setValue(Integer.parseInt(waitTime.getText().toString()));
+            activeRidess.child(clickedRide.getEmail()).setValue(clickedRide);
+            activeRidess.child(clickedRide.getEmail()).child("waitTime").setValue(Integer.parseInt(waitTime.getText().toString()));
             //activeRides.child(clickedRide.getEmail()).setValue(clickedRide);
         }
         else {
-            activeRides.child(clickedRide.getEmail()).setValue(null);
+            activeRides.child(clickedRide.getEmail().replace(".",",")).setValue(null);
             DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
             //Get the time for when the ride was completed.
             Timestamp ts = new Timestamp(System.currentTimeMillis());

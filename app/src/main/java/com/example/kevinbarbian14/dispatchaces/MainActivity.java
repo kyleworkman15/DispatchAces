@@ -93,6 +93,7 @@ public class MainActivity extends Activity {
                 ArrayList<RideInfo> temp = new ArrayList<RideInfo>();
                 for (DataSnapshot shot : dataSnapshot.getChildren()) {
                     RideInfo rider = shot.getValue(RideInfo.class);
+                    rider.setEmail(rider.getEmail().replace(",","."));
                     temp.add(rider);
                 }
                 RideAdapter arrayAdapter = new RideAdapter(getBaseContext(), temp, false);
@@ -111,7 +112,9 @@ public class MainActivity extends Activity {
                     ArrayList<RideInfo> temp = new ArrayList<RideInfo>();
                     for (DataSnapshot shot : dataSnapshot.getChildren()) {
                         RideInfo rider = shot.getValue(RideInfo.class);
+                        rider.setEmail(rider.getEmail().replace(",","."));
                         temp.add(rider);
+                       // rider.setEmail(rider.getEmail().replace(".",","));
                     }
                     RideAdapter arrayAdapter = new RideAdapter(getBaseContext(), temp,true);
 
@@ -128,6 +131,7 @@ public class MainActivity extends Activity {
     }
 
     private void deleteUser(RideInfo rider){
+        rider.setEmail(rider.getEmail().replace(".",","));
         currentRides.child(rider.getEmail()).setValue(null);
         DatabaseReference archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
         archivedRides.child(rider.getEmail()).setValue(rider);
