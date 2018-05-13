@@ -51,3 +51,8 @@ Tyler May
 Pair programmed with Kevin Barbian
 Setting up dispatch display, listview with textviews for email, start and end location, timestamp and edit text and buttons for setting and updating wait time
 Allowing dispatcher to set ACES to go online/offline
+
+Kevin Barbian
+Pair programmed with Tyler. We set up the double list display for pending and active rides--we also connected this with firebase so that it pulls in new ride requests in realtime and displays them. We designed and implemented the custom ride object and custom list item that
+is displayed in the lists. We also implemented the ON/OFF flag and the "Send","Complete", and "Update" buttons in addition to having them 
+communicate with firebase.
