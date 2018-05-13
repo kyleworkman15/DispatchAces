@@ -82,11 +82,11 @@ public class RideAdapter extends ArrayAdapter<RideInfo> {
         holder.button.setOnClickListener(deleteRide);
         holder.update.setOnClickListener(updateRide);
         if (deleteRide.pending==true) {
-            holder.button.setText("SEND");
+            holder.button.setText("Send");
             holder.update.setVisibility(View.GONE);
         }
         else {
-            holder.button.setText("CLEAR");
+            holder.button.setText("Complete");
         }
         holder.email.setText(currentRide.getEmail());
         holder.from.setText(currentRide.getStart());
