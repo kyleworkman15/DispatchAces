@@ -8,13 +8,14 @@ package com.example.kevinbarbian14.dispatchaces;
  */
 
 public class RideInfo {
-    public String email; //the users email
-    public String start; //start location
-    public String end; //destination
-    public int numRiders; //number of riders
-    public String endTime; //timestamp of when the ride was fulfilled
-    public String time; //start time
-    public int waitTime; //wait time
+    private String email; //the users email
+    private String start; //start location
+    private String end; //destination
+    private int numRiders; //number of riders
+    private String endTime; //timestamp of when the ride was fulfilled
+    private String time; //start time
+    private int waitTime; //wait time
+    private String eta;
 
     public String getEmail() {
         return email;
@@ -67,6 +68,10 @@ public class RideInfo {
     public int getWaitTime() {
         return waitTime;
     }
+
+    public String getETA() { return eta; }
+
+    public void setETA(String newETA) { this.eta = newETA; }
 
     public RideInfo(String email, String start, String end, int numRiders, String time, int waitTime, String endTime) {
         this.email = email;

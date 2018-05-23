@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Custom ride click listener that determines whether the ride should be sent to active, archived, or just updated.
@@ -44,8 +45,9 @@ public class RideClickListener implements View.OnClickListener {
             //updating an active ride
             if (updated == true && pending == false) {
                 DatabaseReference activeRidess = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
-                activeRidess.child(clickedRide.getEmail()).child("waitTime").setValue(Integer.parseInt(waitTime.getText().toString()));
-
+                activeRides.child(clickedRide.getEmail()).child("waitTime").setValue(Integer.parseInt(waitTime.getText().toString()));
+                Timestamp ts = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(Integer.parseInt(waitTime.getText().toString())));
+                activeRides.child(clickedRide.getEmail()).child("eta").setValue(new SimpleDateFormat("hh:mm aaa").format(ts));
             }
             //sending a pending ride to active
             else if (pending == true) {
@@ -53,6 +55,8 @@ public class RideClickListener implements View.OnClickListener {
                 DatabaseReference activeRidesRef = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
                 activeRidesRef.child(clickedRide.getEmail()).setValue(clickedRide);
                 activeRidesRef.child(clickedRide.getEmail()).child("waitTime").setValue(Integer.parseInt(waitTime.getText().toString()));
+                Timestamp ts = new Timestamp(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(Integer.parseInt(waitTime.getText().toString())));
+                activeRidesRef.child(clickedRide.getEmail()).child("eta").setValue(new SimpleDateFormat("hh:mm aaa").format(ts));
             }
             //sending an active ride to archived
             else {
