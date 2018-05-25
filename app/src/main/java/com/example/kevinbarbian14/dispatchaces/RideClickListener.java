@@ -34,7 +34,7 @@ public class RideClickListener implements View.OnClickListener {
         this.waitTimeField = waitTimeField;
         this.pending = pending;
         activeRides = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
-        pendingRides = FirebaseDatabase.getInstance().getReference().child("CURRENT RIDES");
+        pendingRides = FirebaseDatabase.getInstance().getReference().child("PENDING RIDES");
         archivedRides = FirebaseDatabase.getInstance().getReference().child("ARCHIVED RIDES");
     }
 

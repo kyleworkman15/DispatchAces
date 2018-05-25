@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
         list = findViewById(R.id.list);
         activeList = findViewById(R.id.active);
         status = (ToggleButton) findViewById(R.id.status);
-        pendingRides = FirebaseDatabase.getInstance().getReference().child("CURRENT RIDES");
+        pendingRides = FirebaseDatabase.getInstance().getReference().child("PENDING RIDES");
         activeRides = FirebaseDatabase.getInstance().getReference().child("ACTIVE RIDES");
         flagStatus = FirebaseDatabase.getInstance().getReference().child("STATUS");
         //we store the value of checked button in shared preferences so that
